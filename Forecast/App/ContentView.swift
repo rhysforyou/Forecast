@@ -75,57 +75,6 @@ struct ContentView: View {
     }
 }
 
-struct Card<Title, Content>: View where Title: View, Content: View {
-    let title: Title
-    let content: Content
-
-    init(@ViewBuilder title: () -> Title, @ViewBuilder content: () -> Content) {
-        self.title = title()
-        self.content = content()
-    }
-
-    var body: some View {
-        VStack(alignment: .leading) {
-            title
-                .foregroundColor(.secondary)
-                .padding(.bottom)
-
-            content
-        }
-        .padding()
-        #if os(iOS)
-        .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
-        #else
-        .background(in: RoundedRectangle(cornerRadius: 8, style: .continuous))
-        #endif
-        .padding(.bottom, 8)
-        .frame(maxWidth: 600)
-    }
-}
-
-extension Card where Title == Text {
-    init(title: String, @ViewBuilder content: () -> Content) {
-        self.title = Text(title)
-        self.content = content()
-    }
-}
-
-extension Gradient {
-    static var skyDay: Gradient {
-        Gradient(colors: [
-            Color("Sky Gradient/Day Top"),
-            Color("Sky Gradient/Day Bottom")
-        ])
-    }
-
-    static var skyNight: Gradient {
-        Gradient(colors: [
-            Color("Sky Gradient/Night Top"),
-            Color("Sky Gradient/Night Bottom")
-        ])
-    }
-}
-
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
