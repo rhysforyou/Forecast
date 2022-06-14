@@ -8,28 +8,34 @@
 import SwiftUI
 
 struct ContentView: View {
-    @Environment(\.refresh) private var refresh
-
     @ObservedObject var weatherRepository: WeatherRepository
 
     var body: some View {
         ScrollView {
             VStack {
                 if let currentWeather = weatherRepository.currentWeather, let forecast = weatherRepository.hourlyForecast {
-                    HStack {
-                        Image(systemName: currentWeather.symbolName)
-                        Text(currentWeather.temperature.formatted(.measurement(
-                            width: .narrow,
-                            usage: .weather,
-                            numberFormatStyle: .number.precision(.fractionLength(0))
-                        )))
-                    }
-                    .symbolRenderingMode(.multicolor)
-                    .font(.system(size: 48, weight: .medium, design: .rounded))
+                    VStack {
+                        HStack {
+                            Spacer()
+                            Image(systemName: currentWeather.symbolName)
+                            Text(currentWeather.temperature.formatted(.measurement(
+                                width: .narrow,
+                                usage: .weather,
+                                numberFormatStyle: .number.precision(.fractionLength(0))
+                            )))
+                            Spacer()
+                        }
+                        .symbolRenderingMode(.multicolor)
+                        .font(Font.system(size: 48, weight: .bold, design: .rounded))
 
-                    Text(currentWeather.condition.description)
-                        .foregroundColor(.secondary)
-                        .padding(.bottom)
+                        Text(currentWeather.condition.description)
+                            .foregroundColor(.secondary)
+                    }
+                    .padding()
+                    .background(currentWeather.isDaylight ? Gradient.skyDay : Gradient.skyNight, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                    .colorScheme(.dark)
+                    .padding(.bottom)
+                    .frame(maxWidth: 600)
 
                     Card {
                         HStack {
@@ -54,11 +60,11 @@ struct ContentView: View {
         .toolbar {
             Button {
                 Task {
-                    await refresh?()
+                    await weatherRepository.fetchWeather()
                 }
             } label: {
                 Label("Refresh", systemImage: "arrow.clockwise")
-            }.disabled(refresh == nil)
+            }
         }
         #if os(iOS)
         .background(Color(uiColor: .systemGroupedBackground))
@@ -66,7 +72,6 @@ struct ContentView: View {
         .frame(minWidth: 400)
         #endif
         .task { await weatherRepository.fetchWeather() }
-        .refreshable { await weatherRepository.fetchWeather() }
     }
 }
 
@@ -90,17 +95,8 @@ struct Card<Title, Content>: View where Title: View, Content: View {
         .padding()
         #if os(iOS)
         .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
-        #elseif os(macOS)
-        .background {
-            ZStack {
-                RoundedRectangle(cornerRadius: 8, style: .continuous)
-                    .stroke(style: StrokeStyle())
-                    .opacity(0.1)
-
-                RoundedRectangle(cornerRadius: 8, style: .continuous)
-                    .fill(.gray.opacity(0.1))
-            }
-        }
+        #else
+        .background(in: RoundedRectangle(cornerRadius: 8, style: .continuous))
         #endif
         .padding(.bottom, 8)
         .frame(maxWidth: 600)
@@ -111,6 +107,22 @@ extension Card where Title == Text {
     init(title: String, @ViewBuilder content: () -> Content) {
         self.title = Text(title)
         self.content = content()
+    }
+}
+
+extension Gradient {
+    static var skyDay: Gradient {
+        Gradient(colors: [
+            Color("Sky Gradient/Day Top"),
+            Color("Sky Gradient/Day Bottom")
+        ])
+    }
+
+    static var skyNight: Gradient {
+        Gradient(colors: [
+            Color("Sky Gradient/Night Top"),
+            Color("Sky Gradient/Night Bottom")
+        ])
     }
 }
 

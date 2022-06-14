@@ -30,7 +30,7 @@ final class WeatherRepository: ObservableObject {
         self.location = location
     }
 
-    func fetchWeather() async {
+    @MainActor func fetchWeather() async {
         do {
             (currentWeather, hourlyForecast) = try await weatherService.weather(for: location, including: .current, .hourly)
         } catch {
