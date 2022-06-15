@@ -7,30 +7,13 @@
 
 import SwiftUI
 
-let locations: [Location] = [
-    .init(
-        name: "Sydney",
-        latitude: -33.865143,
-        longitude: 151.209900
-    ),
-    .init(
-        name: "Melbourne",
-        latitude: -37.840935,
-        longitude: 144.946457
-    ),
-    .init(
-        name: "San Francisco",
-        latitude: 37.773972,
-        longitude: -122.431297
-    )
-]
-
 struct ContentView: View {
-    @State private var selectedLocation: UUID? = locations.first?.id
+    @ObservedObject var model: ForecastModel
+    @State var selectedLocation: Location.ID?
 
     var body: some View {
         NavigationSplitView {
-            List(locations, selection: $selectedLocation) { location in
+            List(model.locations, selection: $selectedLocation) { location in
                 Label(location.name, systemImage: "location")
             }
             .navigationTitle("Locations")
@@ -38,19 +21,24 @@ struct ContentView: View {
             .frame(minWidth: 200)
             #endif
         } detail: {
-            if let selectedLocation = locations.first(where: { $0.id == selectedLocation }) {
-                LocationWeatherView(weatherRepository: WeatherRepository(location: selectedLocation))
+            if let selectedLocation {
+                LocationWeatherView(locationID: selectedLocation)
             } else {
                 Text("Select a location")
                     .font(.title)
                     .foregroundColor(.secondary)
             }
         }
+        .environmentObject(model)
+        .task { await model.updateForecasts() }
+        .refreshable { await model.updateForecasts() }
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
+    static let model = ForecastModel()
+
     static var previews: some View {
-        ContentView()
+        ContentView(model: model)
     }
 }

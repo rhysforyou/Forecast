@@ -8,65 +8,64 @@
 import SwiftUI
 
 struct LocationWeatherView: View {
-    @ObservedObject var weatherRepository: WeatherRepository
+    @EnvironmentObject var model: ForecastModel
+    @Environment(\.refresh) private var refresh
+
+    let locationID: Location.ID
+
+    var location: Location! { model.location(for: locationID) }
+    var weather: LocationWeather! { model.weather(for: locationID) }
 
     var body: some View {
         ScrollView {
             VStack {
-                if let currentWeather = weatherRepository.currentWeather, let forecast = weatherRepository.hourlyForecast {
-                    VStack {
-                        HStack {
-                            Spacer()
-                            Image(systemName: currentWeather.symbolName)
-                            Text(currentWeather.temperature.formatted(.measurement(
-                                width: .narrow,
-                                usage: .weather,
-                                numberFormatStyle: .number.precision(.fractionLength(0))
-                            )))
-                            Spacer()
-                        }
-                        .symbolRenderingMode(.multicolor)
-                        .font(Font.system(size: 48, weight: .bold, design: .rounded))
-
-                        Text(currentWeather.condition.description)
-                    }
-                    .padding()
-                    .background(currentWeather.isDaylight ? Gradient.skyDay : Gradient.skyNight, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
-                    .colorScheme(.dark)
-                    .padding(.bottom)
-                    .frame(maxWidth: 600)
-
-                    Card {
-                        HStack {
-                            Image(systemName: "clock")
-                            Text("Hourly Forecast")
-                        }
-                    } content: {
-                        HourlyForecastChart(forecast: .init(forecast: forecast))
-                            .aspectRatio(2, contentMode: .fit)
-                    }
-                } else {
+                VStack {
                     HStack {
                         Spacer()
-                            .controlSize(.large)
+                        Image(systemName: weather.symbolName)
+                        Text(weather.temperature.formatted(.measurement(
+                            width: .narrow,
+                            usage: .weather,
+                            numberFormatStyle: .number.precision(.fractionLength(0))
+                        )))
+                        Spacer()
                     }
+                    .font(Font.system(size: 48, weight: .bold, design: .rounded))
+
+                    Text(weather.condition)
                 }
-                Spacer()
+                .padding()
+                .background(weather.isDaylight ? Gradient.skyDay : Gradient.skyNight, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                .colorScheme(.dark)
+                .padding(.bottom)
+                .frame(maxWidth: 600)
+
+                Card {
+                    HStack {
+                        Image(systemName: "clock")
+                        Text("Hourly Forecast")
+                    }
+                } content: {
+                    HourlyForecastChart(locationID: locationID)
+                        .aspectRatio(2, contentMode: .fit)
+                }
+                .padding()
             }
             .padding()
         }
-        .task { await weatherRepository.fetchWeather() }
-        .navigationTitle(weatherRepository.location.name)
         .toolbar {
             Button {
                 Task {
-                    await weatherRepository.fetchWeather()
+                    await refresh?()
                 }
             } label: {
                 Label("Refresh", systemImage: "arrow.clockwise")
             }
             .keyboardShortcut("R")
+            .disabled(refresh == nil)
+
         }
+        .navigationTitle(location.name)
         #if os(macOS)
         .frame(minWidth: 400)
         #endif
@@ -74,9 +73,13 @@ struct LocationWeatherView: View {
 }
 
 struct LocationWeatherView_Previews: PreviewProvider {
+    static let model = ForecastModel()
+
     static var previews: some View {
         NavigationStack {
-            LocationWeatherView(weatherRepository: WeatherRepository())
+            LocationWeatherView(locationID: model.locations.first!.id)
+                .environmentObject(model)
+                .task { await model.updateForecasts() }
         }
     }
 }

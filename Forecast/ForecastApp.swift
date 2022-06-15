@@ -9,10 +9,13 @@ import SwiftUI
 
 @main
 struct ForecastApp: App {
+    @StateObject private var model = ForecastModel()
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
-        }.commands {
+            ContentView(model: model)
+        }
+        .commands {
             SidebarCommands()
         }
     }
