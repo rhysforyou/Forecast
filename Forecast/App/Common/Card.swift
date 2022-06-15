@@ -23,9 +23,9 @@ struct Card<Title, Content>: View where Title: View, Content: View {
         }
         .padding()
         #if os(iOS)
-        .background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .background(Color(uiColor: .quaternarySystemFill), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
         #else
-        .background(in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .background(.background, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
         #endif
         .frame(maxWidth: 600)
     }

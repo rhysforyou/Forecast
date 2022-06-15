@@ -9,13 +9,11 @@ import SwiftUI
 
 @main
 struct ForecastApp: App {
-    let weatherRepository = WeatherRepository()
-
     var body: some Scene {
         WindowGroup {
-            NavigationStack {
-                ContentView(weatherRepository: weatherRepository)
-            }
+            ContentView()
+        }.commands {
+            SidebarCommands()
         }
     }
 }

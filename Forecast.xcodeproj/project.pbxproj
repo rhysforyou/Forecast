@@ -11,6 +11,8 @@
 		573701382858B89E0043267A /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 573701372858B89E0043267A /* Card.swift */; };
 		5737013A2858B9C60043267A /* Gradients.swift in Sources */ = {isa = PBXBuildFile; fileRef = 573701392858B9C60043267A /* Gradients.swift */; };
 		5783406728581453005BBAFB /* HourlyForecastChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5783406628581453005BBAFB /* HourlyForecastChart.swift */; };
+		57A5F25C2859833600C7CC7E /* LocationWeatherView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A5F25B2859833600C7CC7E /* LocationWeatherView.swift */; };
+		57A5F25E2859849B00C7CC7E /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A5F25D2859849B00C7CC7E /* Location.swift */; };
 		57D51DF02858032100D0B335 /* ForecastApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57D51DEF2858032100D0B335 /* ForecastApp.swift */; };
 		57D51DF22858032100D0B335 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57D51DF12858032100D0B335 /* ContentView.swift */; };
 		57D51DF42858032200D0B335 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 57D51DF32858032200D0B335 /* Assets.xcassets */; };
@@ -23,6 +25,8 @@
 		573701372858B89E0043267A /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
 		573701392858B9C60043267A /* Gradients.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gradients.swift; sourceTree = "<group>"; };
 		5783406628581453005BBAFB /* HourlyForecastChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HourlyForecastChart.swift; sourceTree = "<group>"; };
+		57A5F25B2859833600C7CC7E /* LocationWeatherView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationWeatherView.swift; sourceTree = "<group>"; };
+		57A5F25D2859849B00C7CC7E /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		57D51DEC2858032100D0B335 /* Forecast.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Forecast.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		57D51DEF2858032100D0B335 /* ForecastApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForecastApp.swift; sourceTree = "<group>"; };
 		57D51DF12858032100D0B335 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -48,6 +52,7 @@
 			children = (
 				57D51DFE285803B500D0B335 /* WeatherRepository.swift */,
 				571A6AC928582C6800629DD1 /* HourlyForecast.swift */,
+				57A5F25D2859849B00C7CC7E /* Location.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -55,12 +60,37 @@
 		571A6ACB28582C9400629DD1 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				57A5F256285982F000C7CC7E /* Navigation */,
+				57A5F257285982F600C7CC7E /* Weather */,
+				57A5F2582859830600C7CC7E /* Common */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		57A5F256285982F000C7CC7E /* Navigation */ = {
+			isa = PBXGroup;
+			children = (
 				57D51DF12858032100D0B335 /* ContentView.swift */,
+			);
+			path = Navigation;
+			sourceTree = "<group>";
+		};
+		57A5F257285982F600C7CC7E /* Weather */ = {
+			isa = PBXGroup;
+			children = (
 				5783406628581453005BBAFB /* HourlyForecastChart.swift */,
+				57A5F25B2859833600C7CC7E /* LocationWeatherView.swift */,
+			);
+			path = Weather;
+			sourceTree = "<group>";
+		};
+		57A5F2582859830600C7CC7E /* Common */ = {
+			isa = PBXGroup;
+			children = (
 				573701372858B89E0043267A /* Card.swift */,
 				573701392858B9C60043267A /* Gradients.swift */,
 			);
-			path = App;
+			path = Common;
 			sourceTree = "<group>";
 		};
 		57D51DE32858032100D0B335 = {
@@ -170,9 +200,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				57A5F25C2859833600C7CC7E /* LocationWeatherView.swift in Sources */,
 				5783406728581453005BBAFB /* HourlyForecastChart.swift in Sources */,
 				573701382858B89E0043267A /* Card.swift in Sources */,
 				57D51DFF285803B500D0B335 /* WeatherRepository.swift in Sources */,
+				57A5F25E2859849B00C7CC7E /* Location.swift in Sources */,
 				571A6ACA28582C6800629DD1 /* HourlyForecast.swift in Sources */,
 				57D51DF22858032100D0B335 /* ContentView.swift in Sources */,
 				5737013A2858B9C60043267A /* Gradients.swift in Sources */,

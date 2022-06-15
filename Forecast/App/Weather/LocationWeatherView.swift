@@ -1,13 +1,13 @@
 //
-//  ContentView.swift
+//  LocationWeatherView.swift
 //  Forecast
 //
-//  Created by Rhys Powell on 14/6/2022.
+//  Created by Rhys Powell on 15/6/2022.
 //
 
 import SwiftUI
 
-struct ContentView: View {
+struct LocationWeatherView: View {
     @ObservedObject var weatherRepository: WeatherRepository
 
     var body: some View {
@@ -29,7 +29,6 @@ struct ContentView: View {
                         .font(Font.system(size: 48, weight: .bold, design: .rounded))
 
                         Text(currentWeather.condition.description)
-                            .foregroundColor(.secondary)
                     }
                     .padding()
                     .background(currentWeather.isDaylight ? Gradient.skyDay : Gradient.skyNight, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
@@ -56,7 +55,8 @@ struct ContentView: View {
             }
             .padding()
         }
-        .navigationTitle("Forecast")
+        .task { await weatherRepository.fetchWeather() }
+        .navigationTitle(weatherRepository.location.name)
         .toolbar {
             Button {
                 Task {
@@ -65,20 +65,18 @@ struct ContentView: View {
             } label: {
                 Label("Refresh", systemImage: "arrow.clockwise")
             }
+            .keyboardShortcut("R")
         }
-        #if os(iOS)
-        .background(Color(uiColor: .systemGroupedBackground))
-        #elseif os(macOS)
+        #if os(macOS)
         .frame(minWidth: 400)
         #endif
-        .task { await weatherRepository.fetchWeather() }
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
+struct LocationWeatherView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            ContentView(weatherRepository: WeatherRepository())
+            LocationWeatherView(weatherRepository: WeatherRepository())
         }
     }
 }

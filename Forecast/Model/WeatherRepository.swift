@@ -20,27 +20,22 @@ extension Logger {
 final class WeatherRepository: ObservableObject {
     private let weatherService: WeatherService
 
-    let location: CLLocation
+    let location: Location
 
     @Published var currentWeather: CurrentWeather?
     @Published var hourlyForecast: Forecast<HourWeather>?
 
-    init(weatherService: WeatherService = .shared, location: CLLocation = .sydney) {
+    init(weatherService: WeatherService = .shared, location: Location = .sydney) {
         self.weatherService = weatherService
         self.location = location
     }
 
     @MainActor func fetchWeather() async {
         do {
-            (currentWeather, hourlyForecast) = try await weatherService.weather(for: location, including: .current, .hourly)
+            (currentWeather, hourlyForecast) = try await weatherService.weather(for: location.clLocation, including: .current, .hourly)
         } catch {
             Logger.weatherRepository.error("Unable to fetch weather: \(error)")
         }
     }
 }
 
-extension CLLocation {
-    static var sydney: CLLocation {
-        CLLocation(latitude: -33.865143, longitude: 151.209900)
-    }
-}
