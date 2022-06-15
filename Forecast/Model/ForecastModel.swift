@@ -22,7 +22,6 @@ extension LocationWeather {
 @MainActor
 class ForecastModel: ObservableObject {
     @Published var locations: [Location]
-    @Published var selectedLocation: Location.ID?
     @Published var weatherByLocation: [Location.ID: LocationWeather] = [:]
 
     init() {

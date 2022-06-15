@@ -9,20 +9,22 @@ import SwiftUI
 
 struct ContentView: View {
     @ObservedObject var model: ForecastModel
-    @State var selectedLocation: Location.ID?
+    @State var selection: Location.ID?
 
     var body: some View {
         NavigationSplitView {
-            List(model.locations, selection: $selectedLocation) { location in
-                Label(location.name, systemImage: "location")
+            List(model.locations, selection: $selection) { location in
+                NavigationLink(value: location.id) {
+                    Label(location.name, systemImage: "location")
+                }
             }
             .navigationTitle("Locations")
             #if os(macOS)
-            .frame(minWidth: 200)
+            .navigationSplitViewColumnWidth(min: 200, ideal: 200)
             #endif
         } detail: {
-            if let selectedLocation {
-                LocationWeatherView(locationID: selectedLocation)
+            if let selection {
+                LocationWeatherView(locationID: selection)
             } else {
                 Text("Select a location")
                     .font(.title)

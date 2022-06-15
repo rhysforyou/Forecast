@@ -14,44 +14,28 @@ struct LocationWeatherView: View {
     let locationID: Location.ID
 
     var location: Location! { model.location(for: locationID) }
-    var weather: LocationWeather! { model.weather(for: locationID) }
 
     var body: some View {
         ScrollView {
-            VStack {
+            if let weather = model.weather(for: locationID) {
                 VStack {
-                    HStack {
-                        Spacer()
-                        Image(systemName: weather.symbolName)
-                        Text(weather.temperature.formatted(.measurement(
-                            width: .narrow,
-                            usage: .weather,
-                            numberFormatStyle: .number.precision(.fractionLength(0))
-                        )))
-                        Spacer()
-                    }
-                    .font(Font.system(size: 48, weight: .bold, design: .rounded))
+                    CurrentConditionsCard(weather: weather)
 
-                    Text(weather.condition)
+                    Card {
+                        HStack {
+                            Image(systemName: "clock")
+                            Text("Hourly Forecast")
+                        }
+                    } content: {
+                        HourlyForecastChart(locationID: locationID)
+                            .aspectRatio(2, contentMode: .fit)
+                    }
+                    .padding()
                 }
                 .padding()
-                .background(weather.isDaylight ? Gradient.skyDay : Gradient.skyNight, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
-                .colorScheme(.dark)
-                .padding(.bottom)
-                .frame(maxWidth: 600)
-
-                Card {
-                    HStack {
-                        Image(systemName: "clock")
-                        Text("Hourly Forecast")
-                    }
-                } content: {
-                    HourlyForecastChart(locationID: locationID)
-                        .aspectRatio(2, contentMode: .fit)
-                }
-                .padding()
+            } else {
+                ProgressView()
             }
-            .padding()
         }
         .toolbar {
             Button {
@@ -69,6 +53,33 @@ struct LocationWeatherView: View {
         #if os(macOS)
         .frame(minWidth: 400)
         #endif
+    }
+}
+
+struct CurrentConditionsCard: View {
+    let weather: LocationWeather
+
+    var body: some View {
+        VStack {
+            HStack {
+                Spacer()
+                Image(systemName: weather.symbolName)
+                Text(weather.temperature.formatted(.measurement(
+                    width: .narrow,
+                    usage: .weather,
+                    numberFormatStyle: .number.precision(.fractionLength(0))
+                )))
+                Spacer()
+            }
+            .font(Font.system(size: 48, weight: .bold, design: .rounded))
+
+            Text(weather.condition)
+        }
+        .padding()
+        .background(weather.isDaylight ? Gradient.skyDay : Gradient.skyNight, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .colorScheme(.dark)
+        .padding(.bottom)
+        .frame(maxWidth: 600)
     }
 }
 
