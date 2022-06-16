@@ -23,12 +23,15 @@ struct ContentView: View {
             .navigationSplitViewColumnWidth(min: 200, ideal: 200)
             #endif
         } detail: {
-            if let selection {
-                LocationWeatherView(locationID: selection)
-            } else {
-                Text("Select a location")
-                    .font(.title)
-                    .foregroundColor(.secondary)
+            // The first beta of iOS/iPadOS 16 has a bug where conditionally updating the contents of a NavigationSplitView's detail column doesn't work. The temporary solution is to wrap the contents in a ZStack
+            ZStack {
+                if let selection {
+                    LocationWeatherView(locationID: selection)
+                } else {
+                    Text("Select a location")
+                        .font(.title)
+                        .foregroundColor(.secondary)
+                }
             }
         }
         .environmentObject(model)
