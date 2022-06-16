@@ -13,7 +13,7 @@ struct LocationWeather: Sendable {
     let condition: String
     let symbolName: String
     let isDaylight: Bool
-    let hourlyForecast: [HourlyForecast]
+    let hourlyForecast: [HourlyWeather]
 
     var temperatureUnit: UnitTemperature {
         temperature.unit
@@ -29,5 +29,20 @@ struct LocationWeather: Sendable {
         }
 
         return startDate! ... endDate!
+    }
+
+    var low: Measurement<UnitTemperature> {
+        let min = hourlyForecast.map(\.temperature).min() ?? temperature
+        return min - Measurement<UnitTemperature>(value: 2, unit: min.unit)
+    }
+}
+
+extension LocationWeather {
+    init(currentWeather: CurrentWeather, hourlyForecast: Forecast<HourWeather>) {
+        self.temperature = currentWeather.temperature
+        self.condition = currentWeather.condition.description
+        self.symbolName = currentWeather.symbolName
+        self.isDaylight = currentWeather.isDaylight
+        self.hourlyForecast = hourlyForecast.forecast.map(HourlyWeather.init)
     }
 }

@@ -8,13 +8,13 @@
 import Foundation
 import WeatherKit
 
-struct HourlyForecast: Sendable {
+struct HourlyWeather: Sendable {
     let date: Date
     let temperature: Measurement<UnitTemperature>
     let isDaylight: Bool
 }
 
-extension HourlyForecast {
+extension HourlyWeather {
     init(hour: HourWeather) {
         self.date = hour.date
         self.temperature = hour.temperature

@@ -14,9 +14,7 @@ struct ContentView: View {
     var body: some View {
         NavigationSplitView {
             List(model.locations, selection: $selection) { location in
-                NavigationLink(value: location.id) {
-                    Label(location.name, systemImage: "location")
-                }
+                Label(location.name, systemImage: "location")
             }
             .navigationTitle("Locations")
             #if os(macOS)
@@ -37,6 +35,9 @@ struct ContentView: View {
         .environmentObject(model)
         .task { await model.updateForecasts() }
         .refreshable { await model.updateForecasts() }
+        #if os(macOS)
+        .frame(minWidth: 600, idealWidth: 850)
+        #endif
     }
 }
 

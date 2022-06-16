@@ -27,10 +27,9 @@ struct LocationWeatherView: View {
                             Text("Hourly Forecast")
                         }
                     } content: {
-                        HourlyForecastChart(locationID: locationID)
+                        HourlyForecastChart(weather: weather)
                             .aspectRatio(2, contentMode: .fit)
                     }
-                    .padding()
                 }
                 .padding()
             } else {

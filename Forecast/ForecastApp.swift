@@ -10,6 +10,7 @@ import SwiftUI
 @main
 struct ForecastApp: App {
     @StateObject private var model = ForecastModel()
+    @Environment(\.refresh) var refresh
 
     var body: some Scene {
         WindowGroup {
@@ -17,6 +18,13 @@ struct ForecastApp: App {
         }
         .commands {
             SidebarCommands()
+            CommandMenu("Locations") {
+                Button("Refresh") {
+                    Task { await refresh?() }
+                }
+                .disabled(refresh == nil)
+                .keyboardShortcut("R")
+            }
         }
     }
 }

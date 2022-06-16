@@ -8,16 +8,6 @@
 import SwiftUI
 import WeatherKit
 
-extension LocationWeather {
-    init(currentWeather: CurrentWeather, hourlyForecast: Forecast<HourWeather>) {
-        self.temperature = currentWeather.temperature
-        self.condition = currentWeather.condition.description
-        self.symbolName = currentWeather.symbolName
-        self.isDaylight = currentWeather.isDaylight
-        self.hourlyForecast = hourlyForecast.forecast.map(HourlyForecast.init)
-    }
-}
-
 /// A representation of the application state
 @MainActor
 class ForecastModel: ObservableObject {
@@ -55,8 +45,8 @@ class ForecastModel: ObservableObject {
                 for location in locations {
                     taskGroup.addTask {
                         let (current, hourly) = try await WeatherService.shared.weather(for: location.clLocation, including: .current, .hourly)
-                        let forecast = LocationWeather(currentWeather: current, hourlyForecast: hourly)
-                        return (location.id, forecast)
+                        let weather = LocationWeather(currentWeather: current, hourlyForecast: hourly)
+                        return (location.id, weather)
                     }
                 }
 
