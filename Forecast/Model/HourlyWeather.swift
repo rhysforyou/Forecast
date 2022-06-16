@@ -12,6 +12,8 @@ struct HourlyWeather: Sendable {
     let date: Date
     let temperature: Measurement<UnitTemperature>
     let isDaylight: Bool
+    let condition: String
+    let symbolName: String
 }
 
 extension HourlyWeather {
@@ -19,5 +21,7 @@ extension HourlyWeather {
         self.date = hour.date
         self.temperature = hour.temperature
         self.isDaylight = hour.isDaylight
+        self.condition = hour.condition.description
+        self.symbolName = hour.symbolName
     }
 }
